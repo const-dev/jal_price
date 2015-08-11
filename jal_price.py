@@ -59,7 +59,7 @@ def main():
     gmail_notifier = GMail_Notifier(gmail_account, password, to_addr)
     gmail_notifier.email('gmail test')
 
-    driver = webdriver.Chrome(executable_path='/tmp/chromedriver')
+    driver = webdriver.Chrome()
     #driver = webdriver.PhantomJS('phantomjs')
 
     driver.get('http://www.tw.jal.com/twl/en/')
