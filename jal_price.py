@@ -30,13 +30,13 @@ class GMail_Notifier(object):
     def __init__(self,
                  gmail_account,
                  password,
-                 to_addr_list=('const.li@gmail.com',),
+                 to_addr,
                  cc_addr_list=(),
                  smtpserver='smtp.gmail.com:587'):
         self.login = gmail_account
         self.password = password
         self.from_addr = gmail_account
-        self.to_addr_list = to_addr_list
+        self.to_addr_list = [to_addr]
         self.cc_addr_list = cc_addr_list
         self.smtpserver = smtpserver
 
@@ -54,8 +54,9 @@ class GMail_Notifier(object):
 def main():
     gmail_account = raw_input('gmail account: ')
     password = getpass.getpass('password: ')
+    to_addr = raw_input('send to email address: ')
 
-    gmail_notifier = GMail_Notifier(gmail_account, password)
+    gmail_notifier = GMail_Notifier(gmail_account, password, to_addr)
     gmail_notifier.email('gmail test')
 
     driver = webdriver.Chrome(executable_path='/tmp/chromedriver')
