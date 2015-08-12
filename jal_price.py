@@ -52,7 +52,7 @@ class GMail_Notifier(object):
 
 
 def wait_element_by_xpath(driver, xpath, timeout=180):
-    WebDriverWait(driver, 180).until(
+    WebDriverWait(driver, timeout).until(
             EC.presence_of_element_located((By.XPATH, xpath)))
     return driver.find_element_by_xpath(xpath)
 
@@ -142,7 +142,7 @@ def jal_price_alert(month, day, to_country='USA_12', to_city='BOS',
 
 
 def main():
-    jal_price_alert(month=8, day=13, email_notification=False)
+    jal_price_alert(month=8, day=13)
 
 
 if __name__ == '__main__':
