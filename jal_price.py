@@ -51,6 +51,12 @@ class GMail_Notifier(object):
                   smtpserver=self.smtpserver)
 
 
+def wait_element_by_xpath(driver, xpath, timeout=180):
+    WebDriverWait(driver, 180).until(
+            EC.presence_of_element_located((By.XPATH, xpath)))
+    return driver.find_element_by_xpath(xpath)
+
+
 def main():
     gmail_account = raw_input('gmail account: ')
     password = getpass.getpass('password: ')
@@ -60,41 +66,26 @@ def main():
     gmail_notifier.email('gmail test')
 
     driver = webdriver.Chrome()
-    #driver = webdriver.PhantomJS('phantomjs')
 
     driver.get('http://www.tw.jal.com/twl/en/')
 
     xpath_one_way = './/input[@type="radio" and @value="O"]'
-    WebDriverWait(driver, 180).until(
-            EC.presence_of_element_located((By.XPATH, xpath_one_way)))
-
-    driver.find_element_by_xpath(xpath_one_way).click()
+    wait_element_by_xpath(driver, xpath_one_way).click()
 
     xpath_from = '//select[@name="B_LOCATION_1"]/option[@value="TPE"]'
-    WebDriverWait(driver, 180).until(
-            EC.presence_of_element_located((By.XPATH, xpath_from)))
-    driver.find_element_by_xpath(xpath_from).click()
+    wait_element_by_xpath(driver, xpath_from).click()
 
     xpath_to_country = '//select[@name="E_AREA"]/option[@value="USA_12"]'
-    WebDriverWait(driver, 180).until(
-            EC.presence_of_element_located((By.XPATH, xpath_to_country)))
-    driver.find_element_by_xpath(xpath_to_country).click()
+    wait_element_by_xpath(driver, xpath_to_country).click()
 
     xpath_to_city = '//select[@name="E_LOCATION_1"]/option[@value="BOS"]'
-    WebDriverWait(driver, 180).until(
-            EC.presence_of_element_located((By.XPATH, xpath_to_city)))
-    driver.find_element_by_xpath(xpath_to_city).click()
-
+    wait_element_by_xpath(driver, xpath_to_city).click()
 
     xpath_month = '//select[@name="B_MONTH"]/option[@value="8"]'
-    WebDriverWait(driver, 180).until(
-            EC.presence_of_element_located((By.XPATH, xpath_month)))
-    driver.find_element_by_xpath(xpath_month).click()
+    wait_element_by_xpath(driver, xpath_month).click()
 
     xpath_day = '//select[@name="B_DAY"]/option[@value="13"]'
-    WebDriverWait(driver, 180).until(
-            EC.presence_of_element_located((By.XPATH, xpath_day)))
-    driver.find_element_by_xpath(xpath_day).click()
+    wait_element_by_xpath(driver, xpath_day).click()
 
     main_window_handle = driver.current_window_handle
 
@@ -111,11 +102,10 @@ def main():
             if handle == main_window_handle:
                 continue
             driver.switch_to_window(handle)
+
             xpath_table = '//table[@id="table0"]'
-            WebDriverWait(driver, 180).until(
-                    EC.presence_of_element_located((By.XPATH, xpath_table)))
-            table = (driver.find_element_by_xpath(xpath_table)
-                           .get_attribute('innerHTML'))
+            table = wait_element_by_xpath(
+                    driver, xpath_table).get_attribute('innerHTML')
 
             print datetime.datetime.now()
             candidate = []
