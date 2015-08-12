@@ -57,13 +57,16 @@ def wait_element_by_xpath(driver, xpath, timeout=180):
     return driver.find_element_by_xpath(xpath)
 
 
-def main():
-    gmail_account = raw_input('gmail account: ')
-    password = getpass.getpass('password: ')
-    to_addr = raw_input('send to email address: ')
+def jal_price_alert(month, day, to_country='USA_12', to_city='BOS',
+        price_threshold=40000, check_frequency=1200, email_notification=True):
 
-    gmail_notifier = GMail_Notifier(gmail_account, password, to_addr)
-    gmail_notifier.email('gmail test')
+    if email_notification:
+        gmail_account = raw_input('gmail account: ')
+        password = getpass.getpass('password: ')
+        to_addr = raw_input('send to email address: ')
+
+        gmail_notifier = GMail_Notifier(gmail_account, password, to_addr)
+        gmail_notifier.email('gmail test')
 
     driver = webdriver.Chrome()
 
@@ -75,16 +78,18 @@ def main():
     xpath_from = '//select[@name="B_LOCATION_1"]/option[@value="TPE"]'
     wait_element_by_xpath(driver, xpath_from).click()
 
-    xpath_to_country = '//select[@name="E_AREA"]/option[@value="USA_12"]'
+    xpath_to_country = ('//select[@name="E_AREA"]/option[@value="%s"]'
+                        % to_country)
     wait_element_by_xpath(driver, xpath_to_country).click()
 
-    xpath_to_city = '//select[@name="E_LOCATION_1"]/option[@value="BOS"]'
+    xpath_to_city = ('//select[@name="E_LOCATION_1"]/option[@value="%s"]'
+                     % to_city)
     wait_element_by_xpath(driver, xpath_to_city).click()
 
-    xpath_month = '//select[@name="B_MONTH"]/option[@value="8"]'
+    xpath_month = '//select[@name="B_MONTH"]/option[@value="%d"]' % month
     wait_element_by_xpath(driver, xpath_month).click()
 
-    xpath_day = '//select[@name="B_DAY"]/option[@value="13"]'
+    xpath_day = '//select[@name="B_DAY"]/option[@value="%02d"]' % day
     wait_element_by_xpath(driver, xpath_day).click()
 
     main_window_handle = driver.current_window_handle
@@ -121,19 +126,23 @@ def main():
                     print date, price
                     try:
                         pricef = float(price.replace(',', ''))
-                        if pricef < 40000:
+                        if pricef < price_threshold:
                             candidate.append('%s: %s' % (date, price))
                     except:
                         pass
 
-            if len(candidate) > 0:
+            if email_notification and len(candidate) > 0:
                 gmail_notifier.email('JAL price alert', '; '.join(candidate))
 
             driver.close()
 
         driver.switch_to_window(main_window_handle)
-        time.sleep(1200)
+        time.sleep(check_frequency)
         print
+
+
+def main():
+    jal_price_alert(month=8, day=13, email_notification=False)
 
 
 if __name__ == '__main__':
