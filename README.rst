@@ -1,7 +1,8 @@
 JAL Ticket Price Checker
 ========================
 
-This script checks the availability of low price JAL tickets.
+This script checks the availability of low price JAL tickets departing from
+Taiwan.
 
 Requirement
 -----------
