@@ -1,8 +1,10 @@
 JAL Ticket Price Checker
 ========================
 
-This script checks the availability of low price JAL tickets departing from
-Taiwan.
+This script checks the availability of low price one way JAL tickets
+from Taipei to Boston.
+An email notification is sent out once the price falls below
+the specified threshold.
 
 Requirement
 -----------
