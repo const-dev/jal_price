@@ -57,7 +57,7 @@ def wait_element_by_xpath(driver, xpath, timeout=180):
     return driver.find_element_by_xpath(xpath)
 
 
-def jal_price_alert(month, day, to_country='USA_12', to_city='BOS',
+def jal_price_alert(month=None, day=None, to_country='USA_12', to_city='BOS',
         price_threshold=40000, check_frequency=1200, email_notification=True):
 
     if email_notification:
@@ -86,11 +86,13 @@ def jal_price_alert(month, day, to_country='USA_12', to_city='BOS',
                      % to_city)
     wait_element_by_xpath(driver, xpath_to_city).click()
 
-    xpath_month = '//select[@name="B_MONTH"]/option[@value="%d"]' % month
-    wait_element_by_xpath(driver, xpath_month).click()
+    if month is not None:
+        xpath_month = '//select[@name="B_MONTH"]/option[@value="%d"]' % month
+        wait_element_by_xpath(driver, xpath_month).click()
 
-    xpath_day = '//select[@name="B_DAY"]/option[@value="%02d"]' % day
-    wait_element_by_xpath(driver, xpath_day).click()
+    if day is not None:
+        xpath_day = '//select[@name="B_DAY"]/option[@value="%02d"]' % day
+        wait_element_by_xpath(driver, xpath_day).click()
 
     main_window_handle = driver.current_window_handle
 
@@ -142,7 +144,8 @@ def jal_price_alert(month, day, to_country='USA_12', to_city='BOS',
 
 
 def main():
-    jal_price_alert(month=8, day=13)
+    #jal_price_alert(month=8, day=13)
+    jal_price_alert()
 
 
 if __name__ == '__main__':
