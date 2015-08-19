@@ -3,6 +3,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 #from selenium.common.exceptions import NoSuchElementException
+import argparse
 import datetime
 import time
 import re
@@ -36,7 +37,7 @@ class GMail_Notifier(object):
         self.login = gmail_account
         self.password = password
         self.from_addr = gmail_account
-        self.to_addr_list = [to_addr]
+        self.to_addr_list = to_addr.split(',')
         self.cc_addr_list = cc_addr_list
         self.smtpserver = smtpserver
 
@@ -58,18 +59,9 @@ def wait_element_by_xpath(driver, xpath, timeout=180):
 
 
 def jal_price_alert(month=None, day=None, to_country='USA_12', to_city='BOS',
-        price_threshold=40000, check_frequency=1200, email_notification=True):
-
-    if email_notification:
-        gmail_account = raw_input('gmail account: ')
-        password = getpass.getpass('password: ')
-        to_addr = raw_input('send to email address: ')
-
-        gmail_notifier = GMail_Notifier(gmail_account, password, to_addr)
-        gmail_notifier.email('gmail test')
+        price_threshold=40000, check_frequency=1200, gmail_notifier=None):
 
     driver = webdriver.Chrome()
-
     driver.get('http://www.tw.jal.com/twl/en/')
 
     xpath_one_way = './/input[@type="radio" and @value="O"]'
@@ -133,8 +125,8 @@ def jal_price_alert(month=None, day=None, to_country='USA_12', to_city='BOS',
                     except:
                         pass
 
-            if email_notification and len(candidate) > 0:
-                gmail_notifier.email('JAL price alert', '; '.join(candidate))
+            if gmail_notifier is not None and len(candidate) > 0:
+                gmail_notifier.email('JAL price alert', '\n'.join(candidate))
 
             driver.close()
 
@@ -144,8 +136,30 @@ def jal_price_alert(month=None, day=None, to_country='USA_12', to_city='BOS',
 
 
 def main():
-    #jal_price_alert(month=8, day=13)
-    jal_price_alert()
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument('-m', dest='gmail_account', default=None,
+            help='gmail account\n(won\'t send notification if not specified)')
+
+    parser.add_argument('-t', dest='to_addr', default=None,
+            help='comma separated email addresses to send notification to\n'
+                 '(send to GMAIL_ACCOUNT if not specified)')
+
+    args = parser.parse_args()
+
+    gmail_account = args.gmail_account
+    gmail_notifier = None
+    if gmail_account:
+        password = getpass.getpass('gmail password: ')
+        to_addr = args.to_addr
+        if to_addr is None:
+            to_addr = gmail_account
+
+        gmail_notifier = GMail_Notifier(gmail_account, password, to_addr)
+        gmail_notifier.email('gmail test')
+
+    #jal_price_alert(month=8, day=13, gmail_notifier=gmail_notifier)
+    jal_price_alert(gmail_notifier=gmail_notifier)
 
 
 if __name__ == '__main__':

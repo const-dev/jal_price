@@ -14,6 +14,20 @@ Requirement
 * `Selenium Python bindings <https://pypi.python.org/pypi/selenium>`_
 * `ChromeDriver <https://code.google.com/p/selenium/wiki/ChromeDriver>`_
 
+Command-line Options
+--------------------
+
+Several options are available using the command line::
+
+   usage: jal_price.py [-h] [-m GMAIL_ACCOUNT] [-t TO_ADDR]
+
+   optional arguments:
+     -h, --help        show this help message and exit
+     -m GMAIL_ACCOUNT  gmail account
+                       (won't send notification if not specified)
+     -t TO_ADDR        comma separated email addresses to send notification to
+                       (send to GMAIL_ACCOUNT if not specified)
+
 Troubleshooting
 ---------------
 
